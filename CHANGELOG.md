@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - Adding changelog file
 - Adding scripts to read list of medias from mediabiasfactcheck.com and their biases
 - Requiriments.txt
+- Adding dir data with a list of medias and its' biases
 
 ### Changed
 - Moved the directory imgs to assets
