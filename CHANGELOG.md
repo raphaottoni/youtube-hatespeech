@@ -1,0 +1,10 @@
+# Youtube Hatespeech research 
+
+All notable changes to this research, starting from 22 of july 2018, will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+
+## v0.1 - 2018-07-30
+
+### Added
+- Adding changelog file
