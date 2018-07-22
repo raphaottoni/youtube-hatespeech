@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 ### Added
 - Adding changelog file
 - Adding scripts to read list of medias from mediabiasfactcheck.com
+- Requiriments.txt
 
 ### Changed
 - Moved the directory imgs to assets
