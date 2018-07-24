@@ -17,7 +17,6 @@ def main():
     all_medias = medias_bias.keys()
     print("Done!")
     
-    print("Searching medias in YouTube...")
     api = YoutubeApi()
 
     # write csv with all medias name and the associated bias
@@ -25,7 +24,7 @@ def main():
         writer = csv.writer(csv_file)
         writer.writerow(["media, bias, youtube_channel, viewCount, subscribersCount, videoCount"])
 
-        print("Searching for YouTube Channel...")
+        print("Searching for media channels in YouTube...")
         for media in tqdm(all_medias):
             channels = api.youtube_search(media)
             if channels:
