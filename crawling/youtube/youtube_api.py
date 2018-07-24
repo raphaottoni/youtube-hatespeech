@@ -15,7 +15,7 @@ class YoutubeApi():
 
         
     #Search the youtube for the query
-    def youtube_search(self, query,  maxResults = 50):
+    def youtube_search(self, query,  maxResults = 50, kind = "channels"):
  
         search_response = self.youtube.search().list(
             q = query,
@@ -26,21 +26,28 @@ class YoutubeApi():
         videos = []
         channels = []
         playlists = []
+        results =  []
         
         # Add each result to the appropriate list, and then display the lists of
         # matching videos, channels, and playlists.
         for search_result in search_response.get("items", []):
           if search_result["id"]["kind"] == "youtube#video":
-            videos.append("%s (%s)" % (search_result["snippet"]["title"],
-                                       search_result["id"]["videoId"]))
+            videos.append([search_result["snippet"]["title"], search_result["id"]["videoId"]])
           elif search_result["id"]["kind"] == "youtube#channel":
-            channels.append("%s (%s)" % (search_result["snippet"]["title"],
-                                         search_result["id"]["channelId"]))
+            channels.append([search_result["snippet"]["title"], search_result["id"]["channelId"]])
           elif search_result["id"]["kind"] == "youtube#playlist":
-            playlists.append("%s (%s)" % (search_result["snippet"]["title"],
-                                          search_result["id"]["playlistId"]))
+            playlists.append([search_result["snippet"]["title"], search_result["id"]["playlistId"]])
+
+        results = channels  if kind == "channels" else videos if kind == "videos" else playlists
+
+        return results
+
+    # get channel info
+    def get_channel_info(self, channel, part="statistics"):
+        
+        response = self.youtube.channels().list(
+            part = part,
+            id = channel
+        ).execute()
  
-        print("################################# "  + query + " ############################")     
-        print("Videos:\n"+ "\n".join(videos)+ "\n")
-        print("Channels:\n"+ "\n".join(channels)+ "\n")
-        print("Playlists:\n" + "\n".join(playlists)+ "\n")
+        return response["items"][0][part] if response["items"] else [] 

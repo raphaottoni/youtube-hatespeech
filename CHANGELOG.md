@@ -14,7 +14,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - Requiriments.txt
 - Adding dir data with a list of medias and its' biases
 - Adding class to handle youtube v3 api requests
-- added script crawling/youtube/find_media_in_youtube.py to consult channels in youtube
+- added script crawling/youtube/find_media_in_youtube.py to consult channels in youtube and write it's statistics
+- youtube_api now collect channel info
+- find_media_in_youtube.py now looks for media in youtube and collect the top channel recomendation
 
 ### Changed
 - Moved the directory imgs to assets
