@@ -19,7 +19,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - find_media_in_youtube.py now looks for media in youtube and collect the top channel recommendation
 - General scripts directory
 - Script to filter the most popular channels (+100.000 subscribers) on youtube in each category
-- Manually selected channels
+- Manually selected channels results ( data/manually-filtered/youtube_channels.csv)
+- Python script (crawling/youtube/collect_videos_in_channel.py) to collect all videoIDs from a YouTube Channel
+- Collected videoIDs from manually selected channels (data/manually-filtered/youtube_videos.csv)
 
 ### Changed
 - Moved the directory imgs to assets
+- Aggregated results from manually select chanels into a single csv
+

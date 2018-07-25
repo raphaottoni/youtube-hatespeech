@@ -51,3 +51,31 @@ class YoutubeApi():
         ).execute()
  
         return response["items"][0][part] if response["items"] else [] 
+
+
+    # Collect videos from channel
+    def youtube_get_videos_from_channel(self, channel_id):
+        search_response = self.youtube.search().list(
+                                channelId= channel_id,
+                                part = "id",
+                                type = "video",
+                                maxResults=50
+                            ).execute()
+        videos = []
+        continue_searching = True
+
+        while(continue_searching):
+            new_videos = [ video["id"]["videoId"] for video in search_response["items"] if video["id"]["kind"] == "youtube#video" ]
+            if "nextPageToken" in search_response: 
+                search_response = self.youtube.search().list(
+                                        channelId= channel_id,
+                                        part = "id",
+                                        type = "video",
+                                        pageToken= search_response["nextPageToken"],
+                                        maxResults=50
+                                    ).execute()
+                videos.extend(new_videos)
+            else:
+                continue_searching = False
+
+        return videos
