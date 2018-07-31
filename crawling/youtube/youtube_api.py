@@ -1,6 +1,11 @@
 from config import Config
 from apiclient.discovery import build
 from apiclient.errors import HttpError
+import urllib.request
+import re
+import json
+import codecs
+import html
 
 # Class that handles youtube api v3
 class YoutubeApi():
@@ -79,3 +84,100 @@ class YoutubeApi():
                 continue_searching = False
 
         return videos
+
+
+
+    # Collect video caption
+    def collect_closed_captions(self, video_id, lang="pt"):
+    
+        url_video = "https://www.youtube.com/watch?v={}".format(video_id)
+        html = urllib.request.urlopen(url_video, timeout=30).read().decode("utf-8")
+        search_url = re.search("\'TTS_URL\': (.*),", html)
+    
+        if search_url:
+            url_partial = json.loads(search_url.group(1))
+            if len(url_partial) > 0:
+                url_caption = "{}&kind=asr&lang={}&fmt=srv3".format(url_partial, lang)
+                data_caption = urllib.request.urlopen(url_caption, timeout=30).read().decode("utf-8")
+            else:
+                data_caption = None
+        else:
+            data_caption = None
+    
+        return data_caption
+
+    # Clean html tags
+    @staticmethod
+    def cleanhtml(raw_html):
+        cleanr = re.compile('<.*?>')
+        cleantext = re.sub(cleanr, '', raw_html)
+        return html.unescape(re.sub(" +", " ", cleantext.strip().replace('\n',' ')))
+
+
+    # Collect caption
+    # params
+    # ------
+    #   video_id: str
+    #       Youtube's video identification 
+    #   lang: str
+    #       What language you want to get
+    #   kind: str
+    #       Which kind of text do you want: "transcript" (Google's algorithm speech to text) 
+    #                                       "subtitle" (Use's uploaded subtitles
+    #                                       "both" (return both transcript and subtitle) 
+    # returns
+    # -------
+    #   captions: dict
+    #       dict containing the specified kind of caption regarding the video. The key is the kind specified.
+
+    def collect_caption(self, video_id, lang="en", kind="both"):
+    
+        url_video = "https://www.youtube.com/watch?v={}".format(video_id)
+        html = urllib.request.urlopen(url_video, timeout=30).read().decode("utf-8")
+    
+        search_url = re.search("\'TTS_URL\': (.*),", html)
+    
+        data_caption = {} 
+
+        if search_url:
+            url_partial = json.loads(search_url.group(1))
+            if kind == "subtitle":
+                if (not ("kind=asr" in url_partial)) and len(url_partial) > 0:
+                    try:
+                        url_caption = "{}&lang={}&fmt=srv3".format(url_partial, lang)
+                        data_caption["subtitle"] = YoutubeApi.cleanhtml(urllib.request.urlopen(url_caption, timeout=30).read().decode("utf-8"))
+                    except urllib.error.HTTPError:
+                        data_caption["subtitle"] = None
+                else:
+                    data_caption["subtitle"] = {}
+            elif kind == "transcript":
+                if len(url_partial) > 0:
+                    try:
+                        url_caption = "{}&kind=asr&lang={}&fmt=srv3".format(url_partial, lang)
+                        data_caption["transcript"]  = YoutubeApi.cleanhtml(urllib.request.urlopen(url_caption, timeout=30).read().decode("utf-8"))
+                    except urllib.error.HTTPError:
+                        data_caption["transcript"] = None
+                else:
+                    data_caption["transcript"] = None
+            elif kind == "both":
+                if (not ("kind=asr" in url_partial)) and len(url_partial) > 0:
+                    try:
+                        url_caption = "{}&lang={}&fmt=srv3".format(url_partial, lang)
+                        data_caption["subtitle"] = YoutubeApi.cleanhtml(urllib.request.urlopen(url_caption, timeout=30).read().decode("utf-8"))
+                    except urllib.error.HTTPError:
+                        data_caption["subtitle"] = None
+                else:
+                    data_caption["subtitle"] = None
+
+                if len(url_partial) > 0:
+                    try:
+                        url_caption = "{}&kind=asr&lang={}&fmt=srv3".format(url_partial, lang)
+                        data_caption["transcript"]  = YoutubeApi.cleanhtml(urllib.request.urlopen(url_caption, timeout=30).read().decode("utf-8"))
+                    except urllib.error.HTTPError:
+                        data_caption["transcript"] = None
+                else:
+                    data_caption["transcript"] = None
+        else:
+            data_caption= {}
+        
+        return data_caption

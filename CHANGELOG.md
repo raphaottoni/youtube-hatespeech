@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - Manually selected channels results ( data/manually-filtered/youtube_channels.csv)
 - Python script (crawling/youtube/collect_videos_in_channel.py) to collect all videoIDs from a YouTube Channel
 - Collected videoIDs from manually selected channels (data/manually-filtered/youtube_videos.csv)
+- Added funcionality of collecting video's captions with youtube_api.py
 
 ### Changed
 - Moved the directory imgs to assets
