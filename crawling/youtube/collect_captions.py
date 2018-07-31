@@ -21,17 +21,12 @@ def main():
     
     api = YoutubeApi()
 
-#    from IPython import embed
-#    embed()
-
     # write json file with all data from the video, each line is a json
     with open("../../data/videos.jsonl", 'w') as json_file:
 
         print("Collecting captions from YouTube videos...")
         for video in tqdm(all_videos):
-            print(video)
             captions = api.collect_caption(video, "en", "both")
-            print(captions)
             if captions:
                 video = { "videoID": video, "media": video_info[video]["media"], "bias": video_info[video]["bias"],  "channel": video_info[video]["channel"], "captions": captions} 
                 json.dump(video, json_file)
