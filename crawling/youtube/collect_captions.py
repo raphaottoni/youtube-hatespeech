@@ -12,7 +12,7 @@ def main():
         reader = csv.reader(csvfile, delimiter=',')
         next(reader, None)  # skip the headers
         for row in reader:
-            video_info[row[0]] = {  "media": row[1], "bias": row[2], "channel": row[3]}
+            video_info[row[0]] = {  "media": row[1].strip(), "bias": row[2].strip(), "channel": row[3].strip()}
  
     
     # collect all medias
