@@ -1,7 +1,7 @@
 import csv
 from youtube_api import YoutubeApi
 from tqdm import tqdm
-import json
+import jsonlines
 
 def main():
 
@@ -21,20 +21,17 @@ def main():
     
     api = YoutubeApi()
 
-#    from IPython import embed
-#    embed()
-
     # write json file with all data from the video, each line is a json
-    with open("../../data/videos.jsonl", 'w') as json_file:
+    with jsonlines.open("../../data/videos.jsonl", 'w') as writer:
 
         print("Collecting captions from YouTube videos...")
         for video in tqdm(all_videos):
-            print(video)
+            #print(video)
             captions = api.collect_caption(video, "en", "both")
-            print(captions)
+            #print(captions)
             if captions:
                 video = { "videoID": video, "media": video_info[video]["media"], "bias": video_info[video]["bias"],  "channel": video_info[video]["channel"], "captions": captions} 
-                json.dump(video, json_file)
+                writer.write(video)
         print("Done! Results written in ../../data/videos.jsonl")
 
 
