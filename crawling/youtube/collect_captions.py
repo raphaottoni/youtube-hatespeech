@@ -26,9 +26,9 @@ def main():
 
         print("Collecting captions from YouTube videos...")
         for video in tqdm(all_videos):
-            #print(video)
+
             captions = api.collect_caption(video, "en", "both")
-            #print(captions)
+
             if captions:
                 video = { "videoID": video, "media": video_info[video]["media"], "bias": video_info[video]["bias"],  "channel": video_info[video]["channel"], "captions": captions} 
                 writer.write(video)
