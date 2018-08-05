@@ -18,14 +18,25 @@ def main():
     # collect all medias
     all_videos = video_info.keys()
     print("Done!")
-    
+
+    print("Checking how many aren't collected yet...") 
+
+    already_collected = []
+	
+    with jsonlines.open('../../data/videos.jsonl') as reader:
+        for obj in reader:
+            already_collected.append(obj["videoID"])
+ 
+    remaning_videos_to_collect = set(all_videos) - set(already_collected)
+
+    print("Done!")
     api = YoutubeApi()
 
     # write json file with all data from the video, each line is a json
-    with jsonlines.open("../../data/videos.jsonl", 'w') as writer:
+    with jsonlines.open("../../data/videos.jsonl", 'a') as writer:
 
         print("Collecting captions from YouTube videos...")
-        for video in tqdm(all_videos):
+        for video in tqdm(remaning_videos_to_collect):
 
             captions = api.collect_caption(video, "en", "both")
 
