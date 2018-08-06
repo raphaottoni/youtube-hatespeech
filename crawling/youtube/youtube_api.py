@@ -181,3 +181,41 @@ class YoutubeApi():
             data_caption= {}
         
         return data_caption
+
+
+
+    # Collect videos from channel
+    def collect_comments_from_Video(self, videoId):
+
+        search_response = self.youtube.commentThreads().list(
+                                videoId = videoId,
+                                part = 'snippet',
+                                maxResults = 100
+                            ).execute()
+
+        comments_json = []
+        continue_searching = True
+
+        while(continue_searching):
+
+            # add the current pageToken comments 
+            
+            for comment_json in search_response["items"]:
+                comments_json.append(comment_json)                
+
+
+            if "nextPageToken" in search_response: 
+                search_response = self.youtube.commentThreads().list(
+                                videoId = videoId,
+                                part = 'snippet',
+                                pageToken = search_response["nextPageToken"],
+                                maxResults = 100
+                            ).execute()
+            else:
+                continue_searching = False
+
+
+        return comments_json
+
+
+

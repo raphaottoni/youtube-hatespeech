@@ -5,6 +5,11 @@ All notable changes to this research, starting from 22 of july 2018, will be doc
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 
+## v0.2 - 2018-08-15
+
+### Added
+- YouTube api call to collect all comments (not reply to comments) from videoId
+- script to collect all comments from all database videos
 
 ## v0.1 - 2018-07-30
 
