@@ -26,7 +26,7 @@ def main():
     with jsonlines.open('../../data/videos.jsonl') as reader:
         for obj in reader:
             already_collected.append(obj["videoID"])
- 
+
     remaning_videos_to_collect = set(all_videos) - set(already_collected)
 
     print("Done!")

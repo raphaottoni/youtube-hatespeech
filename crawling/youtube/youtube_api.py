@@ -6,6 +6,7 @@ import re
 import json
 import codecs
 import html
+import time
 
 # Class that handles youtube api v3
 class YoutubeApi():
@@ -204,6 +205,15 @@ class YoutubeApi():
                 with open("../../data/videos_that_disabled_comments.csv", "a") as writer:
                     writer.write(videoId +"\n")
                 continue_searching = False
+            elif error.resp.status == 400:
+                print("Trying on last time to get initial comments from video: " + videoId)
+                time.sleep(25)
+                search_response = self.youtube.commentThreads().list(
+                                    videoId = videoId,
+                                    part = 'snippet',
+                                    maxResults = 100
+                                ).execute()
+                
 
 
 
@@ -226,6 +236,7 @@ class YoutubeApi():
                 except HttpError as error:
                     if error.resp.status == 400:
                         print("Trying on last time to get comments from pageToken: " + search_response["nextPageToken"] )
+                        time.sleep(25)
                         search_response = self.youtube.commentThreads().list(
                                     videoId = videoId,
                                     part = 'snippet',
