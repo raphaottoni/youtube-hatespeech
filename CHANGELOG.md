@@ -4,8 +4,14 @@ All notable changes to this research, starting from 22 of july 2018, will be doc
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## v0.4  - 2018-08-30
+ 
+### Added
 
-## v0.2 - 2018-08-15
+### Fix 
+
+
+## v0.3 - 2018-08-15
 
 ### Added
 - YouTube api call to collect all comments (not reply to comments) from videoId
