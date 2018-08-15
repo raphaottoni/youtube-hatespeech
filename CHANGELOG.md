@@ -11,9 +11,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - YouTube api call to collect all comments (not reply to comments) from videoId
 - script to collect all comments from all database video
 - script to collect all coments from video now logs the videos that disabled comments into "data/videos_that_disabled_comments.csv" 
+- script to summarize statistics from collected data
 
 ### Fix
 - Adding exception handler for error 403 ( YouTube Video's disabled comments) and 400 (api temporaly failure)
+- Encode fix on youtube_channels.csv
 
 ## v0.1 - 2018-07-30
 
