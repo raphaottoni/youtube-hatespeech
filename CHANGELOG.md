@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
  
 ### Added
 - script that prepare teh data for analysis
+- script to finetuning wiki-word2vec model with data from each political biases
 
 
 ## v0.3 - 2018-08-15
