@@ -5,6 +5,12 @@ All notable changes to this research, starting from 22 of july 2018, will be doc
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 
+## v0.4 - 2018-08-15
+ 
+### Added
+- script that prepare teh data for analysis
+
+
 ## v0.2 - 2018-08-15
 
 ### Added
