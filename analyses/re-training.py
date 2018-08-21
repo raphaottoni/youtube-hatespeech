@@ -10,20 +10,23 @@ from collections import defaultdict
 model = gensim.models.Word2Vec.load("../models/wiki-word2vec/wiki-en.word2vec.model")
 
 # All available political views
-policital_spectrum = ["left",  "leftcenter", "center", "right-center", "right", "conspiracy"] 
+#policital_spectrum = ["left",  "leftcenter", "center", "right-center", "right", "conspiracy"] 
+policital_spectrum = ["left", "right"] 
 
 for bias in policital_spectrum:
     print("Loading captions from bias:" + bias )
     with open("../data/processed/captions/"+ bias+ ".txt", "r") as file_reader:
-        data = file_reader.read().split(" ")
+        data = []
+        for line in file_reader:
+            data.append(line.strip().split(" "))
+        #data = file_reader.read().split(" ")
+        print("Training the model: " + bias )
 
-
-    print("Training the model: " + bias )
-    # Train the model
-    model_wiki = copy.deepcopy(model)
-    model_wiki.train(data,total_examples=model.corpus_count,epochs=model.iter)
-    print("Saving the model: " + bias)
-    model_wiki.save("../models/biases/captions/"+ bias+ ".txt")
+        # Train the model
+        model_wiki = copy.deepcopy(model)
+        model_wiki.train(data,total_examples=len(data),epochs=model.iter)
+        print("Saving the model: " + bias)
+        model_wiki.save("../models/biases/captions/"+ bias+ ".model")
 
 
 #cosine_similarity_prostitute = numpy.dot(model['woman'],model['prostitute'])/(numpy.linalg.norm(model['woman'])*numpy.linalg.norm(model['prostitute']))

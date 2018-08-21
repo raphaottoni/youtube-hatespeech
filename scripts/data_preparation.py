@@ -127,16 +127,16 @@ def main():
             # porpuses
             random.seed(10)
             random.shuffle(captions)
-            for caption  in captions:
+            for caption in captions:
                 try:
-                    file_writer.write(caption + " ")
+                    file_writer.write(caption + "\n")
                 except UnicodeEncodeError:
                     c = prep_data(caption)
                     try:
-                        file_writer.write(c + " ")
+                        file_writer.write(c + "\n")
                     except UnicodeEncodeError: 
                         c = c.encode('ascii', 'ignore').decode("utf-8")
-                        file_writer.write(c + " ")
+                        file_writer.write(c + "\n")
 
     # Generate one file for each bias into directory data containing all
     # comments from videos
@@ -160,14 +160,14 @@ def main():
             random.shuffle(comments)
             for comment in comments:
                 try:
-                    file_writer.write(comment + " ")
+                    file_writer.write(comment + "\n")
                 except UnicodeEncodeError:
                     c = prep_data(comment)
                     try:
-                        file_writer.write(c + " ")
+                        file_writer.write(c + "\n")
                     except UnicodeEncodeError: 
                         c = c.encode('ascii', 'ignore').decode("utf-8")
-                        file_writer.write(c + " ")
+                        file_writer.write(c + "\n")
 
        
 

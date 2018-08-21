@@ -15,15 +15,15 @@ policital_spectrum = ["left",  "leftcenter", "center", "right-center", "right", 
 for bias in policital_spectrum:
     print("Loading comments from bias:" + bias )
     with open("../data/processed/comments/"+ bias+ ".txt", "r") as file_reader:
-        data = file_reader.read().split(" ")
-
-
-    print("Training the model: " + bias )
-    # Train the model
-    model_wiki = copy.deepcopy(model)
-    model_wiki.train(data,total_examples=model.corpus_count,epochs=model.iter)
-    print("Saving the model: " + bias)
-    model_wiki.save("../models/biases/comments/"+ bias+ ".txt")
+        data = []
+        for line in file_reader:
+            data.append(line.strip().split(" "))
+        print("Training the model: " + bias )
+        # Train the model
+        model_wiki = copy.deepcopy(model)
+        model_wiki.train(data,total_examples=len(data),epochs=model.iter)
+        print("Saving the model: " + bias)
+        model_wiki.save("../models/biases/comments/"+ bias+ ".model")
 
 
 #cosine_similarity_prostitute = numpy.dot(model['woman'],model['prostitute'])/(numpy.linalg.norm(model['woman'])*numpy.linalg.norm(model['prostitute']))

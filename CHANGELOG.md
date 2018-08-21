@@ -10,7 +10,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 - script that prepare teh data for analysis
 - script to finetuning wiki-word2vec model with data from channel's videos
 - script to finetuning wiki-word2vec model with data from channel's comments 
+- WEAT scripts
 
+### Changed
+- data_preparation now saves one caption per line
+
+### Fix
+- Bug that made all biases models to be the same after re-training
 
 ## v0.3 - 2018-08-15
 
