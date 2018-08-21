@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
  
 ### Added
 - script that prepare teh data for analysis
-- script to finetuning wiki-word2vec model with data from each political biases
+- script to finetuning wiki-word2vec model with data from channel's videos
+- script to finetuning wiki-word2vec model with data from channel's comments 
 
 
 ## v0.3 - 2018-08-15
