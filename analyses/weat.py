@@ -158,8 +158,7 @@ def main():
 
     
     # list of WEATs to execute
-    weats = [1]
-    #weats = [1,2,3,4,5]
+    weats = [1,2,3,4,5]
     
     with open("../data/weat/weat_results.csv", "w") as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
