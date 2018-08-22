@@ -152,7 +152,7 @@ def main():
                     if comment: 
                         comments.append(comment)
 
-        print("Writing " + bias + " captions from videos")
+        print("Writing " + bias + " comments from videos")
         with open("../data/processed/comments/"+ bias+ ".txt", "w") as file_writer:
             # shuffle the captions using the same seed for reproducibility
             # porpuses
