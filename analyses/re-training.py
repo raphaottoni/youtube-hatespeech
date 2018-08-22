@@ -10,8 +10,7 @@ from collections import defaultdict
 model = gensim.models.Word2Vec.load("../models/wiki-word2vec/wiki-en.word2vec.model")
 
 # All available political views
-#policital_spectrum = ["left",  "leftcenter", "center", "right-center", "right", "conspiracy"] 
-policital_spectrum = ["left", "right"] 
+policital_spectrum = ["left",  "leftcenter", "center", "right-center", "right", "conspiracy"] 
 
 for bias in policital_spectrum:
     print("Loading captions from bias:" + bias )

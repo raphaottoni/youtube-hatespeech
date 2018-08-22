@@ -153,10 +153,8 @@ def p_value(X,Y,A,B,model):
 def main():
 
     # Which models to load
-    #political_biases_model = ["left", "leftcenter", "center", "right-center", "right", "conspiracy"]
-    political_biases_model = ["left","right"]
-    #model_types = [ "captions", "comments"]
-    model_types = [ "captions"]
+    political_biases_model = ["left", "leftcenter", "center", "right-center", "right", "conspiracy"]
+    model_types = [ "captions", "comments"]
 
     
     # list of WEATs to execute
