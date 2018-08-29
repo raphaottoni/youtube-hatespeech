@@ -8,3 +8,4 @@ tqdm
 jsonlines
 gensim
 numpy
+nltk

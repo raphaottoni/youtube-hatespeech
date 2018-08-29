@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ### Changed
 - data_preparation now saves one caption per line
+- datap_preparation now saves one file for captionand one for comments for each channel on dataset
 
 ### Fix
 - Bug that made all biases models to be the same after re-training

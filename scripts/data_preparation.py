@@ -3,6 +3,7 @@ import random
 import string
 import re
 import jsonlines
+import os
 
 LATIN_1_CHARS = (
     (b'\xe2\x80\x99', b"'"),
@@ -103,71 +104,97 @@ def main():
     
     # All available political views
     policital_spectrum = ["left",  "leftcenter", "center", "right-center",
-    "right", "conspiracy"]
+    "right"]
 
+    captions = {}
+    comments = {}
 
-    # Generate one file for each bias into directory data containing all
-    # transcripts/subtitles from videos
     for bias in policital_spectrum:
-        captions= []
-        print("Collecting " + bias + " captions from videos")
-        with jsonlines.open('../data/videos.jsonl') as reader:
-            for obj in reader:      
-                # Verify if it is from the bias we are looking from
-                if obj["bias"] == bias:
+        captions[bias] = {}
+        comments[bias] = {}
 
-                    if obj["captions"]["subtitle"]:
-                        captions.append(prep_data(obj["captions"]["subtitle"]))
-                    elif obj["captions"]["transcript"]:
-                        captions.append(prep_data(obj["captions"]["transcript"]))
+    # Generate one file for channel captions into directory data 
+    with jsonlines.open('../data/videos.jsonl') as reader:
+        print("Collecting captions from videos")
 
-        print("Writing " + bias + " captions from videos")
-        with open("../data/processed/captions/"+ bias+ ".txt", "w") as file_writer:
-            # shuffle the captions using the same seed for reproducibility
-            # porpuses
-            random.seed(10)
-            random.shuffle(captions)
-            for caption in captions:
-                try:
-                    file_writer.write(caption + "\n")
-                except UnicodeEncodeError:
-                    c = prep_data(caption)
-                    try:
-                        file_writer.write(c + "\n")
-                    except UnicodeEncodeError: 
-                        c = c.encode('ascii', 'ignore').decode("utf-8")
-                        file_writer.write(c + "\n")
+        for obj in reader:      
 
-    # Generate one file for each bias into directory data containing all
-    # comments from videos
-    for bias in policital_spectrum:
-        comments = []
-        print("Collecting " + bias + " comments from videos")
-        with jsonlines.open('../data/video_comments.jsonl') as reader:
-            for obj in reader:      
-                # Verify if it is from the bias we are looking from
-                if obj["bias"] == bias:
+            if obj["bias"] in policital_spectrum:
+                # create the channel key if it dosnt exista
+                if obj["channel"] not in captions[obj["bias"]]:
+                    captions[obj["bias"]][obj["channel"]] = []
 
-                    comment  = prep_data(obj["comment"]["snippet"]["topLevelComment"]["snippet"]["textDisplay"])
-                    if comment: 
-                        comments.append(comment)
+                if obj["captions"]["subtitle"]:
+                    captions[obj["bias"]][obj["channel"]].append(prep_data(obj["captions"]["subtitle"]))
+                elif obj["captions"]["transcript"]:
+                    captions[obj["bias"]][obj["channel"]].append(prep_data(obj["captions"]["transcript"]))
 
-        print("Writing " + bias + " comments from videos")
-        with open("../data/processed/comments/"+ bias+ ".txt", "w") as file_writer:
-            # shuffle the captions using the same seed for reproducibility
-            # porpuses
-            random.seed(10)
-            random.shuffle(comments)
-            for comment in comments:
-                try:
-                    file_writer.write(comment + "\n")
-                except UnicodeEncodeError:
-                    c = prep_data(comment)
-                    try:
-                        file_writer.write(c + "\n")
-                    except UnicodeEncodeError: 
-                        c = c.encode('ascii', 'ignore').decode("utf-8")
-                        file_writer.write(c + "\n")
+        print("Writing captions from channels")
+        for bias in policital_spectrum:
+            for channel in captions[bias]:
+
+                # create directory if it is the case
+                if not os.path.exists("../data/processed/captions/" + bias + "/"):
+                        os.makedirs("../data/processed/captions/" + bias + "/")
+                # Saves olnly those channels with equal or more than 100 video's
+                # captions collected
+                if captions[bias][channel] and len(captions[bias][channel]) >= 100:
+                    with open("../data/processed/captions/"+ bias+ "/" + channel + ".txt", "w") as file_writer:
+                        # shuffle the captions using the same seed for reproducibility
+                        # porpuses
+                        random.seed(10)
+                        random.shuffle(captions[bias][channel])
+                        for caption in captions[bias][channel]:
+                            try:
+                                file_writer.write(caption + "\n")
+                            except UnicodeEncodeError:
+                                c = prep_data(caption)
+                                try:
+                                    file_writer.write(c + "\n")
+                                except UnicodeEncodeError: 
+                                    c = c.encode('ascii', 'ignore').decode("utf-8")
+                                    file_writer.write(c + "\n")
+
+    # Generate one file for channel captions into directory data 
+    with jsonlines.open('../data/video_comments.jsonl') as reader:
+        print("Collecting comments from videos")
+
+        for obj in reader:      
+            if obj["bias"] in policital_spectrum:
+                # create the channel key if it dosnt exista
+                if obj["channel"] not in comments[obj["bias"]]:
+                    comments[obj["bias"]][obj["channel"]] = []
+
+                comment  = prep_data(obj["comment"]["snippet"]["topLevelComment"]["snippet"]["textDisplay"])
+                if comment: 
+                    comments[obj["bias"]][obj["channel"]].append(comment)
+
+        print("Writing comments from videos")
+        for bias in policital_spectrum:
+            for channel in comments[bias]:
+
+                # create directory if it is the case
+                if not os.path.exists("../data/processed/comments/" + bias + "/"):
+                        os.makedirs("../data/processed/comments/" + bias + "/")
+ 
+                # olnly save those comments that we have more than 100 video's
+                # captions
+                if comments[bias][channel] and captions[bias][channel] and len(captions[bias][channel]) >= 100:
+                    with open("../data/processed/comments/"+ bias+ "/" + channel+ ".txt", "w") as file_writer:
+                        # shuffle the captions using the same seed for reproducibility
+                        # porpuses
+                        random.seed(10)
+                        random.shuffle(comments[bias][channel])
+                        for comment in comments[bias][channel]:
+                            try:
+                                file_writer.write(comment + "\n")
+                            except UnicodeEncodeError:
+                                c = prep_data(comment)
+                                try:
+                                    file_writer.write(c + "\n")
+                                except UnicodeEncodeError: 
+                                    c = c.encode('ascii', 'ignore').decode("utf-8")
+                                    file_writer.write(c + "\n")
 
        
 

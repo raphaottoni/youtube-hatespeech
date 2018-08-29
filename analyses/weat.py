@@ -6,33 +6,39 @@ import csv
 import itertools
 import gensim, copy
 from collections import defaultdict
+import glob, os
 
 target_words = {}
 attribute_words= {}
+weats_name = []
 
 # 1 WEAT Immigrants
 target_words["1_a"] = ["immigrant", "migrant"]
 target_words["1_b"] = ["citizen", "native"]
 attribute_words["1_a"]  = ["bad", "burden", "pirate", "plague", "taker", "thief"]
 attribute_words["1_b"]  = ["good", "honest", "maker", "rightful"]
+weats_name.append("Immigrants")
 
 # 2 WEAT Muslims
 target_words["2_a"] = ["islamism", "muhammed", "muslim", "quran"]
 target_words["2_b"] = ["bible", "christian", "christianity", "jesus"]
 attribute_words["2_a"]  = ["assassin", "attack", "bomb", "death", "murder", "radical", "terrorist"]
 attribute_words["2_b"]  = ["compassionate", "gentle", "humane", "kind", "tolerant"]
+weats_name.append("Muslims")
 
 # 3 WEAT LGBT people
 target_words["3_a"] = ["bisexual", "gay", "homosexual", "lesbian"]
 target_words["3_b"] = ["het", "hetero", "heterosexual", "straight"]
 attribute_words["3_a"]  = ["immoral", "outrageous", "promiscuous", "revolting", "sinner"]
 attribute_words["3_b"]  = ["moral", "natural", "normal"]
+weats_name.append("LGBT People")
 
 # 4 WEAT math arts male_female
 target_words["4_a"]  = ["math","algebra","geometry","calculus","equations","computation","numbers" ]
 target_words["4_b"]  = ["poetry","art","dance","literature","novel","symphony","drama","sculpture" ]
 attribute_words["4_a"]  = ["male","man","boy","brother","he","him","his", "son"]
 attribute_words["4_b"]  = ["female","woman","girl","sister","she","her","hers", "daughter"]
+weats_name.append("Math Arts")
 
 # 5 WEAT  Judaism and Christianity
 # Religious  Judaism Christianity
@@ -40,7 +46,47 @@ target_words["5_a"]  = ["church","bible","christian","christianity"]
 target_words["5_b"]  = ["synagogue","torah","jew","judaism"]
 attribute_words["5_a"]  = ["terrific","delight","celebrate","glad","beautiful","appealing", "pleasure", "enjoy" ]
 attribute_words["5_b"]  = ["hate","angry","detest","despise","dirty","humiliate","pain", "horrible"]
- 
+weats_name.append("Jewish")
+
+# 6 WEAT  African American 1
+target_words["6_a"]  = ["brad", "brendan", "geoffrey", "greg", "brett", "jay",
+                        "matthew", "neil", "todd", "allison", "anne", "carrie",
+                        "emily", "jill", "laurie", "kristen", "meredith", "sarah"]
+
+target_words["6_b"]  = ["darnell", "hakim", "jermaine", "kareem", "jamal",
+                        "leroy", "rasheed", "tremayne", "tyrone", "aisha", 
+                        "ebony", "keisha", "kenya", "latonya", "lakisha", 
+                        "latoya", "tamika", "tanisha"]
+attribute_words["6_a"]  = [ "joy", "love", "peace", "wonderful", "pleasure", "friend", "laughter", "happy"]
+attribute_words["6_b"]  = ["agony", "terrible", "horrible", "nasty", "evil", "war", "awful","failure"]
+weats_name.append("African - 1")
+
+# 7 WEAT  African American 2
+target_words["7_a"]  = ["brad", "brendan", "geoffrey", "greg", "brett", "jay",
+                        "matthew", "neil", "todd", "allison", "anne", "carrie",
+                        "emily", "jill", "laurie", "kristen", "meredith", "sarah"]
+
+target_words["7_b"]  = ["darnell", "hakim", "jermaine", "kareem", "jamal",
+                        "leroy", "rasheed", "tremayne", "tyrone", "aisha", 
+                        "ebony", "keisha", "kenya", "latonya", "lakisha", 
+                        "latoya", "tamika", "tanisha"]
+attribute_words["7_a"]  = ["caress", "freedom", "health", "love", "peace",
+                            "cheer", "friend", "heaven", "loyal", "pleasure", 
+                            "diamond", "gentle", "honest", "lucky", "rainbow",
+                            "diploma", "gift", "honor", "miracle", "sunrise",
+                            "family", "happy","laughter","paradise", "vacation"] 
+
+attribute_words["7_b"]  = ["abuse", "crash", "filth", "murder", "sickness",
+                            "accident", "death", "grief", "poison", "stink", 
+                            "assault", "disaster", "hatred","pollute", "tragedy", 
+                            "bomb", "divorce", "jail", "poverty", "ugly", "cancer",
+                            "evil", "kill", "rotten","vomit"]
+weats_name.append("African - 2")
+
+
+
+
+
 
 def statistic_test(X,Y,A,B,M):
     result = 0.0
@@ -153,33 +199,55 @@ def p_value(X,Y,A,B,model):
 def main():
 
     # Which models to load
-    political_biases_model = ["left", "leftcenter", "center", "right-center", "right", "conspiracy"]
+    political_biases_model = ["left", "leftcenter", "center", "right-center", "right"]
     model_types = [ "captions", "comments"]
 
     
     # list of WEATs to execute
-    weats = [1,2,3,4,5]
+    weats = [1,2,3]
     
     with open("../data/weat/weat_results.csv", "w") as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
-        writer.writerow(["political_bias", "source", "effect_size", "p_value"])
+        writer.writerow(["channel","WEAT","political_bias", "source", "effect_size", "p_value"])
     
-        for political_bias in political_biases_model:
-            for model_type in model_types: 
-                print("Loading " + political_bias + " word2vec " + model_type + " model")
-                model = gensim.models.Word2Vec.load("../models/biases/" + model_type + "/" + political_bias+".model")
-                print("Executing WEATs on current model" )
-                for weat_number in weats:
-                    X =  str(weat_number) + "_a"
-                    Y =  str(weat_number) + "_b"
-                    A =  str(weat_number) + "_a"
-                    B =  str(weat_number) + "_b"
-                    ##  Effect size of the base model
-                    effect_size_result =  effect_size(X,Y,A,B,model)
-                    print("Effect-Size("+str(weat_number)+ "):" + str(effect_size_result))
-                    p_value_result  =  p_value(X,Y,A,B,model)
-                    print("P-value("+str(weat_number)+ "):" + str(p_value_result))
-                    writer.writerow([political_bias, model_types, effect_size_result, p_value_result])
+        #for political_bias in political_biases_model:
+        #    for model_type in model_types: 
+
+        #        for file in os.listdir("../models/biases/" + model_type + "/" + political_bias):
+        #            if file.endswith(".model"):
+        #                print("Loading " + political_bias + " word2vec " +  model_type +  " model " + "(" + file + ")") 
+        #                model = gensim.models.Word2Vec.load("../models/biases/" + model_type + "/" + political_bias+ "/" + file)
+        #                #model = gensim.models.Word2Vec.load("../models/wiki-word2vec/wiki-en.word2vec.model")
+        #                print("Executing WEATs on current model" )
+        #                for weat_number in weats:
+        #                    X =  str(weat_number) + "_a"
+        #                    Y =  str(weat_number) + "_b"
+        #                    A =  str(weat_number) + "_a"
+        #                    B =  str(weat_number) + "_b"
+        #                    ##  Effect size of the base model
+        #                    effect_size_result =  effect_size(X,Y,A,B,model)
+        #                    print("Effect-Size("+str(weat_number)+ "):" + str(effect_size_result))
+        #                    p_value_result  =  p_value(X,Y,A,B,model)
+        #                    print("P-value("+str(weat_number)+ "):" + str(p_value_result))
+        #                    writer.writerow([file[:-6],weats_name[weat_number -1],political_bias , model_type, effect_size_result, p_value_result])
+
+        # Add the baseline weat results the wikipedia model
+        print("Loading the wiki base model")
+        model = gensim.models.Word2Vec.load("../models/wiki-word2vec/wiki-en.word2vec.model")
+        print("Executing WEATs on current model" )
+        for weat_number in weats:
+            X =  str(weat_number) + "_a"
+            Y =  str(weat_number) + "_b"
+            A =  str(weat_number) + "_a"
+            B =  str(weat_number) + "_b"
+            ##  Effect size of the base model
+            effect_size_result =  effect_size(X,Y,A,B,model)
+            print("Effect-Size("+str(weat_number)+ "):" + str(effect_size_result))
+            p_value_result  =  p_value(X,Y,A,B,model)
+            print("P-value("+str(weat_number)+ "):" + str(p_value_result))
+            writer.writerow(["wikipedia",weats_name[weat_number -1], "wiki", "wiki", effect_size_result, p_value_result])
+
+ 
 
 
 if __name__ == "__main__":
